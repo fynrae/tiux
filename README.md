@@ -7,7 +7,7 @@ tiux is a PowerShell-based, sudo-like tool that lets you run any application or 
 ## ✨ Features
 
 - 🚀 **Launch any executable** as TrustedInstaller  
-- 🖥️ Supports both GUI and CLI tools  
+- 🖥️ Supports both GUI (for GUI, please use [untrusted1nstaller](https://github.com/fynrae/untrusted1nstaller/releases) instead) and CLI tools  
 - 🔄 Automatically handles the TrustedInstaller service  
 - 📝 Simple, safe, and transparent logging
 
