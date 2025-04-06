@@ -1,125 +1,101 @@
-# 🛡️ tiux: Run Programs as TrustedInstaller
+# 🛡️ tiux - sudo but built for Windows
 
-`tiux` is a command-line tool that allows you to run any executable as the **TrustedInstaller** user on Windows. This can be useful for managing protected system files or bypassing certain access control restrictions (for advanced users).
-
----
-
-## 📦 Features
-
-- 🧠 Automatically elevates privileges to TrustedInstaller
-- 🔒 Works with UAC and NTObjectManager
-- 📝 Generates logs in `%TEMP%`
-- ⚙️ Simple command-line interface like `sudo`
+tiux is a PowerShell-based, sudo-like tool that lets you run any application or command with **TrustedInstaller** privileges on Windows. This is especially useful for advanced system tasks that even Administrator accounts cannot perform directly.
 
 ---
 
-## 📥 Installation
+## ✨ Features
 
-> ⚠️ **Requires Administrator Privileges**
+- 🚀 **Launch any executable** as TrustedInstaller  
+- 🖥️ Supports both GUI and CLI tools  
+- 🔄 Automatically handles the TrustedInstaller service  
+- 📝 Simple, safe, and transparent logging
 
-1. **Download or clone this repository.**
-2. Open **PowerShell as Administrator**.
-3. Run the installer script:
+---
 
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force
-.	iux-install.ps1
-```
+## 📅 Installation
 
-This will:
-- Create `C:\Program Files\tiux\scripts\tiux.ps1`
-- Create `C:\Program Files\tiux\tiux.cmd` shim
-- Add `C:\Program Files\tiux` to your `PATH` (if not already)
+### Prerequisites
+
+- Windows 10 or newer  
+- PowerShell 5.1+  
+- Administrator privileges  
+- Internet connection (for first-time module installation)
+
+### Steps
+
+1. **Open PowerShell as Administrator.**
+2. Run the following command to download and install tiux:
+
+    ```powershell
+    irm https://raw.githubusercontent.com/fynrae/tiux/main/tiux-install.ps1 | iex
+    ```
+
+This command will:
+- Create the installation directory at `C:\Program Files\tiux`
+- Write the `tiux.ps1` and `untrusted1nstaller-runas.ps1` scripts  
+- Create `.cmd` shims so you can launch `tiux` from any terminal  
+- Add the install directory to your system PATH (if not already present)
 
 ---
 
 ## 🚀 Usage
 
-After installation, you can run programs as TrustedInstaller using:
+tiux is used from the command line like any normal Windows command.
+
+### Basic Usage
 
 ```bash
-tiux notepad.exe
+tiux notepad
 ```
-
-You can also pass full paths or command-line arguments:
+*Launches Notepad with TrustedInstaller privileges.*
 
 ```bash
-tiux "C:\Windows\System32\cmd.exe" /k whoami
+tiux cmd
 ```
+*Opens a new Command Prompt session as TrustedInstaller.*
 
-### 🔍 Check Version
+### Custom Executables
+
+```bash
+tiux "C:\Path\To\YourApp.exe" arg1 arg2
+```
+Pass full paths and arguments as you would in a normal terminal. If the path contains spaces, wrap it in quotes.
+
+### Version Check
+
 ```bash
 tiux --version
 ```
+*Displays the installed version.*
 
 ---
 
-## 🧪 Testing
+## ⚙️ How It Works
 
-To verify it works:
+1. **Restarts** the TrustedInstaller service and retrieves its PID  
+2. Uses the **NtObjectManager** module to impersonate the TrustedInstaller process  
+3. **Launches** the specified executable using `New-Win32Process` under that context
 
-1. Run:
-   ```bash
-   tiux cmd.exe
-   ```
-
-2. In the new CMD window, run:
-   ```cmd
-   whoami
-   ```
-   You should see:
-   ```
-   nt authority\system
-   ```
-
-3. Try editing a protected file:
-   ```bash
-   tiux notepad "C:\Windows\System32\drivers\etc\hosts"
-   ```
+_All operations are logged to `%TEMP%\tiux-log.txt`_
 
 ---
 
-## 🧼 Uninstalling
+## 🔍 Troubleshooting
 
-To remove `tiux`, manually delete:
+- **File not found**: Ensure the executable exists or is in your system PATH  
+- **Permissions error**: Make sure you're running the command as Administrator  
+- **Module not found**: If `NtObjectManager` fails to install, check your internet connection or run:
 
-- `C:\Program Files\tiux`
-- Remove it from your system `PATH`
-
----
-
-## 🛠️ Troubleshooting
-
-### ❌ "Please run this script as Administrator!"
-Make sure you're running the PowerShell script with **Run as Administrator**.
-
-### ❌ `NtObjectManager` module issues
-Run this to install it manually:
-```powershell
-Install-Module NtObjectManager -Scope CurrentUser -Force -SkipPublisherCheck
-```
+    ```powershell
+    Install-Module NtObjectManager -Scope CurrentUser -Force -SkipPublisherCheck
+    ```
 
 ---
 
 ## 🙏 Credits
 
-- ⚙️ [NtObjectManager](https://github.com/googleprojectzero/sandbox-attacksurface-analysis-tools) by James Forshaw
-- 🧠 Inspired by Linux's `sudo`, but for Windows TrustedInstaller use
+Developed by [Fynrae](https://github.com/fynrae)
 
----
-
-## 🧙‍♂️ Advanced Usage
-
-`tiux` can be used to script or automate tasks needing elevated privileges beyond Administrator. Be cautious — you can make system-wide changes.
-
-```bash
-tiux powershell.exe -Command "Remove-Item -Force C:\Windows\System32\somefile.dll"
-```
-
----
-
-## 📬 Feedback
-Have suggestions, issues, or ideas? Feel free to open an issue or contribute!
-
-Happy hacking with ✨ `tiux`!
+Related tools: [untrusted1nstaller](https://github.com/fynrae/untrusted1nstaller)
 
