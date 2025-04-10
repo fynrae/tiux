@@ -203,13 +203,13 @@ Set-Content -Path $tiuxShim -Value "@echo off`r`nPowerShell -ExecutionPolicy Byp
 Set-Content -Path $untrustedShim -Value "@echo off`r`nPowerShell -ExecutionPolicy Bypass -NoProfile -File `"%~dp0scripts\untrusted1nstaller-runas.ps1`" %*" -Encoding ASCII
 
 # ------------------ Add to PATH ------------------
-$envPath = [System.Environment]::GetEnvironmentVariable("PATH", "Machine")
+$envPath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 if (-not $envPath.Split(";") -contains $installDir) {
     Write-Host "Adding $installDir to system PATH using setx..."
     $newPath = "$envPath;$installDir"
-    cmd.exe /c "setx PATH `"$newPath`" /M"
+    cmd.exe /c "setx Path `"$newPath`" /M"
 } else {
-    Write-Host "PATH already contains $installDir"
+    Write-Host "Path already contains $installDir"
 }
 
 Write-Host "[+] tiux installed successfully!"
