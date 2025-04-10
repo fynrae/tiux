@@ -203,10 +203,10 @@ Set-Content -Path $tiuxShim -Value "@echo off`r`nPowerShell -ExecutionPolicy Byp
 Set-Content -Path $untrustedShim -Value "@echo off`r`nPowerShell -ExecutionPolicy Bypass -NoProfile -File `"%~dp0scripts\untrusted1nstaller-runas.ps1`" %*" -Encoding ASCII
 
 # ------------------ Add to PATH ------------------
-$envPath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+$envPath = [System.Environment]::GetEnvironmentVariable("PATH", "Machine")
 if (-not $envPath.Split(";") -contains $installDir) {
     Write-Host "Adding $installDir to system PATH..."
-    [System.Environment]::SetEnvironmentVariable("Path", "$envPath;$installDir", "Machine")
+    [System.Environment]::SetEnvironmentVariable("PATH", "$envPath;$installDir", "Machine")
 } else {
     Write-Host "PATH already contains $installDir"
 }
