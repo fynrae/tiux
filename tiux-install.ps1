@@ -205,8 +205,9 @@ Set-Content -Path $untrustedShim -Value "@echo off`r`nPowerShell -ExecutionPolic
 # ------------------ Add to PATH ------------------
 $envPath = [System.Environment]::GetEnvironmentVariable("PATH", "Machine")
 if (-not $envPath.Split(";") -contains $installDir) {
-    Write-Host "Adding $installDir to system PATH..."
-    [System.Environment]::SetEnvironmentVariable("PATH", "$envPath;$installDir", "Machine")
+    Write-Host "Adding $installDir to system PATH using setx..."
+    $newPath = "$envPath;$installDir"
+    cmd.exe /c "setx PATH `"$newPath`" /M"
 } else {
     Write-Host "PATH already contains $installDir"
 }
